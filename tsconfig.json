@@ -34,7 +34,7 @@
   "include": [
       "./src/**/*.ts",
       "./test/**/*.ts"
-  ],
+, "algoritmoAgrupador.test.ts"  ],
   "exclude": [
     "./node_modules/*",
     "dist"
