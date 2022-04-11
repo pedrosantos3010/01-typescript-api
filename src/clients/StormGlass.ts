@@ -36,7 +36,7 @@ export class StormGlass {
     try {
       const apiUrl = stormGlassResourceConfig.get("apiUrl");
       const response = await this.request.get<StormGlassForecastResponse>(
-        `${apiUrl}?lat=${latitude}&lng=${longitude}&params=${this.stormGlassAPIParams}&source=${this.stormGlassAPISource}&end=1592113802`,
+        `${apiUrl}/weather/point?lat=${latitude}&lng=${longitude}&params=${this.stormGlassAPIParams}&source=${this.stormGlassAPISource}`,
         {
           headers: {
             Authorization: stormGlassResourceConfig.get("apiToken"),
@@ -63,16 +63,18 @@ export class StormGlass {
   private normalizeResponse(
     point: StormGlassForecastResponse
   ): ForecastPoint[] {
-    return point.hours.filter(this.isValidPoint.bind(this)).map((p) => ({
-      time: p.time,
-      waveDirection: p.waveDirection[this.stormGlassAPISource],
-      waveHeight: p.waveHeight[this.stormGlassAPISource],
-      swellDirection: p.swellDirection[this.stormGlassAPISource],
-      swellHeight: p.swellHeight[this.stormGlassAPISource],
-      swellPeriod: p.swellPeriod[this.stormGlassAPISource],
-      windDirection: p.windDirection[this.stormGlassAPISource],
-      windSpeed: p.windSpeed[this.stormGlassAPISource],
-    }));
+    return point.hours
+      .filter((p) => this.isValidPoint(p))
+      .map((p) => ({
+        time: p.time,
+        waveDirection: p.waveDirection[this.stormGlassAPISource],
+        waveHeight: p.waveHeight[this.stormGlassAPISource],
+        swellDirection: p.swellDirection[this.stormGlassAPISource],
+        swellHeight: p.swellHeight[this.stormGlassAPISource],
+        swellPeriod: p.swellPeriod[this.stormGlassAPISource],
+        windDirection: p.windDirection[this.stormGlassAPISource],
+        windSpeed: p.windSpeed[this.stormGlassAPISource],
+      }));
   }
 
   private isValidPoint(point: Partial<StormGlassPoint>): boolean {
